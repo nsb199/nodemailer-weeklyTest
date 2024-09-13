@@ -16,7 +16,7 @@ const ContactForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/send-email', {
+      const response = await fetch('https://nodemailer-weeklytest-backend.onrender.com/send-email', { // Updated URL
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

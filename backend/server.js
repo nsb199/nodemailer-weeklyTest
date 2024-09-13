@@ -1,4 +1,3 @@
-// backend/server.js
 const express = require('express');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
@@ -8,14 +7,27 @@ const dotenv = require('dotenv');
 dotenv.config(); // Load environment variables from .env file
 
 const app = express();
-app.use(cors());
+
+// Configure CORS to allow requests from your frontend domain
+const allowedOrigins = ['https://nodemailer-weekly-test.vercel.app']; // Your frontend URL
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
+
 app.use(bodyParser.json());
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // You can use other services like 'yahoo', 'hotmail', etc.
+  service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER, // Use environment variable for email
-    pass: process.env.EMAIL_PASS, // Use environment variable for password
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -24,7 +36,7 @@ app.post('/send-email', (req, res) => {
 
   const mailOptions = {
     from: email,
-    to: process.env.EMAIL_USER, // Use environment variable for recipient email
+    to: process.env.EMAIL_USER,
     subject: `Message from ${name}`,
     text: message,
   };
